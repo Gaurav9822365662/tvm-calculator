@@ -1,0 +1,1298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Time Value of Money Calculator</title>
+
+    <style>
+        /* ---------- Basic Page Style ---------- */
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f2f2;
+            margin: 0;
+        }
+
+        header {
+            background: #222;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        nav {
+            background: white;
+            text-align: center;
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        nav button {
+            margin: 5px;
+            padding: 9px 14px;
+            border: 1px solid #555;
+            background: white;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        nav button:hover {
+            background: #e8e8e8;
+        }
+
+        /* ---------- Calculator Box ---------- */
+
+        .page {
+            display: none;
+            width: 90%;
+            max-width: 850px;
+            margin: 25px auto;
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-sizing: border-box;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        h2 {
+            margin-top: 0;
+        }
+
+        label {
+            display: block;
+            margin-top: 12px;
+            font-weight: bold;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            box-sizing: border-box;
+            border: 1px solid #aaa;
+            border-radius: 4px;
+        }
+
+        .calculate-btn,
+        .reset-btn {
+            margin-top: 18px;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .calculate-btn {
+            background: #333;
+            color: white;
+        }
+
+        .reset-btn {
+            background: #ddd;
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 12px;
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            line-height: 1.7;
+        }
+
+        /* ---------- Table ---------- */
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: right;
+        }
+
+        th:first-child,
+        td:first-child {
+            text-align: center;
+        }
+
+        th {
+            background: #eee;
+        }
+
+        /* ---------- Mobile View ---------- */
+
+        @media (max-width: 600px) {
+
+            .page {
+                width: 95%;
+                padding: 18px;
+            }
+
+            table {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ================= HEADER ================= -->
+
+    <header>
+        <h1>Time Value of Money Calculator</h1>
+    </header>
+
+
+    <!-- ================= NAVIGATION ================= -->
+
+    <nav>
+
+        <button onclick="showPage('fv')">
+            Future Value
+        </button>
+
+        <button onclick="showPage('pv')">
+            Present Value
+        </button>
+
+        <button onclick="showPage('si')">
+            Simple Interest
+        </button>
+
+        <button onclick="showPage('ci')">
+            Compound Interest
+        </button>
+
+        <button onclick="showPage('emi')">
+            EMI
+        </button>
+
+        <button onclick="showPage('amortization')">
+            Amortization
+        </button>
+
+        <button onclick="showPage('scenario')">
+            Scenario Analysis
+        </button>
+
+    </nav>
+
+
+    <!-- =====================================================
+         1. FUTURE VALUE
+         Formula: FV = P(1 + r)^t
+         ===================================================== -->
+
+    <section id="fv" class="page active">
+
+        <h2>Future Value</h2>
+
+        <label>Principal Amount (₹)</label>
+        <input
+            type="number"
+            id="fvPrincipal"
+            placeholder="Enter principal amount"
+        >
+
+        <label>Annual Interest Rate (%)</label>
+        <input
+            type="number"
+            id="fvRate"
+            placeholder="Enter interest rate"
+        >
+
+        <label>Time Period (Years)</label>
+        <input
+            type="number"
+            id="fvTime"
+            placeholder="Enter time"
+        >
+
+        <button class="calculate-btn" onclick="calculateFV()">
+            Calculate
+        </button>
+
+        <button class="reset-btn" onclick="resetPage('fv')">
+            Reset
+        </button>
+
+        <div id="fvAnswer" class="result">
+            Result will appear here.
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         2. PRESENT VALUE
+         Formula: PV = FV / (1 + r)^t
+         ===================================================== -->
+
+    <section id="pv" class="page">
+
+        <h2>Present Value</h2>
+
+        <label>Future Value (₹)</label>
+        <input
+            type="number"
+            id="pvFutureValue"
+            placeholder="Enter future value"
+        >
+
+        <label>Discount Rate (%)</label>
+        <input
+            type="number"
+            id="pvRate"
+            placeholder="Enter discount rate"
+        >
+
+        <label>Time Period (Years)</label>
+        <input
+            type="number"
+            id="pvTime"
+            placeholder="Enter time"
+        >
+
+        <button class="calculate-btn" onclick="calculatePV()">
+            Calculate
+        </button>
+
+        <button class="reset-btn" onclick="resetPage('pv')">
+            Reset
+        </button>
+
+        <div id="pvAnswer" class="result">
+            Result will appear here.
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         3. SIMPLE INTEREST
+         Formula: SI = P × r × t
+         Maturity Value = P + SI
+         ===================================================== -->
+
+    <section id="si" class="page">
+
+        <h2>Simple Interest</h2>
+
+        <label>Principal Amount (₹)</label>
+        <input
+            type="number"
+            id="siPrincipal"
+            placeholder="Enter principal amount"
+        >
+
+        <label>Interest Rate (%)</label>
+        <input
+            type="number"
+            id="siRate"
+            placeholder="Enter interest rate"
+        >
+
+        <label>Time Period (Years)</label>
+        <input
+            type="number"
+            id="siTime"
+            placeholder="Enter time"
+        >
+
+        <button class="calculate-btn" onclick="calculateSI()">
+            Calculate
+        </button>
+
+        <button class="reset-btn" onclick="resetPage('si')">
+            Reset
+        </button>
+
+        <div id="siAnswer" class="result">
+            Result will appear here.
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         4. COMPOUND INTEREST
+         Formula: A = P(1 + r/n)^(nt)
+         CI = A - P
+         ===================================================== -->
+
+    <section id="ci" class="page">
+
+        <h2>Compound Interest</h2>
+
+        <label>Principal Amount (₹)</label>
+        <input
+            type="number"
+            id="ciPrincipal"
+            placeholder="Enter principal amount"
+        >
+
+        <label>Interest Rate (%)</label>
+        <input
+            type="number"
+            id="ciRate"
+            placeholder="Enter interest rate"
+        >
+
+        <label>Time Period (Years)</label>
+        <input
+            type="number"
+            id="ciTime"
+            placeholder="Enter time"
+        >
+
+        <label>Compounding Frequency</label>
+
+        <select id="ciFrequency">
+
+            <option value="1">
+                Yearly
+            </option>
+
+            <option value="2">
+                Half-Yearly
+            </option>
+
+            <option value="4">
+                Quarterly
+            </option>
+
+            <option value="12">
+                Monthly
+            </option>
+
+        </select>
+
+        <button class="calculate-btn" onclick="calculateCI()">
+            Calculate
+        </button>
+
+        <button class="reset-btn" onclick="resetPage('ci')">
+            Reset
+        </button>
+
+        <div id="ciAnswer" class="result">
+            Result will appear here.
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         5. EMI CALCULATION
+         ===================================================== -->
+
+    <section id="emi" class="page">
+
+        <h2>EMI Calculation</h2>
+
+        <label>Loan Amount (₹)</label>
+        <input
+            type="number"
+            id="emiLoan"
+            placeholder="Enter loan amount"
+        >
+
+        <label>Annual Interest Rate (%)</label>
+        <input
+            type="number"
+            id="emiRate"
+            placeholder="Enter interest rate"
+        >
+
+        <label>Loan Tenure (Years)</label>
+        <input
+            type="number"
+            id="emiYears"
+            placeholder="Enter loan tenure"
+        >
+
+        <button class="calculate-btn" onclick="calculateEMI()">
+            Calculate
+        </button>
+
+        <button class="reset-btn" onclick="resetPage('emi')">
+            Reset
+        </button>
+
+        <div id="emiAnswer" class="result">
+            Result will appear here.
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         6. LOAN AMORTIZATION
+         ===================================================== -->
+
+    <section id="amortization" class="page">
+
+        <h2>Loan Amortization Schedule</h2>
+
+        <label>Loan Amount (₹)</label>
+        <input
+            type="number"
+            id="amortLoan"
+            placeholder="Enter loan amount"
+        >
+
+        <label>Annual Interest Rate (%)</label>
+        <input
+            type="number"
+            id="amortRate"
+            placeholder="Enter interest rate"
+        >
+
+        <label>Loan Tenure (Years)</label>
+        <input
+            type="number"
+            id="amortYears"
+            placeholder="Enter loan tenure"
+        >
+
+        <button
+            class="calculate-btn"
+            onclick="calculateAmortization()"
+        >
+            Generate Schedule
+        </button>
+
+        <button
+            class="reset-btn"
+            onclick="resetPage('amortization')"
+        >
+            Reset
+        </button>
+
+        <div id="amortAnswer" class="result">
+            Schedule will appear here.
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         7. SCENARIO ANALYSIS
+         Rates: 8%, 10%, 12%, 15%
+         ===================================================== -->
+
+    <section id="scenario" class="page">
+
+        <h2>Scenario Analysis</h2>
+
+        <label>Principal Amount (₹)</label>
+        <input
+            type="number"
+            id="scenarioPrincipal"
+            placeholder="Enter principal amount"
+        >
+
+        <label>Time Period (Years)</label>
+        <input
+            type="number"
+            id="scenarioTime"
+            placeholder="Enter time"
+        >
+
+        <button
+            class="calculate-btn"
+            onclick="calculateScenario()"
+        >
+            Compare Rates
+        </button>
+
+        <button
+            class="reset-btn"
+            onclick="resetPage('scenario')"
+        >
+            Reset
+        </button>
+
+        <div id="scenarioAnswer" class="result">
+            Comparison will appear here.
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+         ===================================================== -->
+
+    <script>
+
+        /* =====================================================
+           COMMON FUNCTIONS
+           ===================================================== */
+
+        // Show the selected calculator
+        function showPage(pageName) {
+
+            var pages = document.getElementsByClassName("page");
+
+            for (var i = 0; i < pages.length; i++) {
+
+                pages[i].classList.remove("active");
+
+            }
+
+            document.getElementById(pageName)
+                .classList.add("active");
+        }
+
+
+        // Format amount with two decimal places
+        function money(value) {
+
+            return "₹" + value.toFixed(2);
+
+        }
+
+
+        // Check whether an input is empty
+        function isEmpty(value) {
+
+            return value.trim() === "";
+
+        }
+
+
+        /* =====================================================
+           1. FUTURE VALUE
+           FV = P(1 + r)^t
+           ===================================================== */
+
+        function calculateFV() {
+
+            var principalText =
+                document.getElementById("fvPrincipal").value;
+
+            var rateText =
+                document.getElementById("fvRate").value;
+
+            var timeText =
+                document.getElementById("fvTime").value;
+
+
+            // Check empty fields
+            if (
+                isEmpty(principalText) ||
+                isEmpty(rateText) ||
+                isEmpty(timeText)
+            ) {
+
+                document.getElementById("fvAnswer").innerHTML =
+                    "Please fill all the fields.";
+
+                return;
+            }
+
+
+            var P = Number(principalText);
+            var R = Number(rateText);
+            var T = Number(timeText);
+
+
+            // Validate values
+            if (
+                P <= 0 ||
+                R < 0 ||
+                R > 100 ||
+                T <= 0
+            ) {
+
+                document.getElementById("fvAnswer").innerHTML =
+                    "Please enter valid values. Rate should be between 0% and 100%.";
+
+                return;
+            }
+
+
+            // Convert percentage to decimal
+            var r = R / 100;
+
+
+            // Future Value formula
+            var FV = P * Math.pow(1 + r, T);
+
+
+            // Display result
+            document.getElementById("fvAnswer").innerHTML =
+                "Future Value = " + money(FV);
+
+        }
+
+
+        /* =====================================================
+           2. PRESENT VALUE
+           PV = FV / (1 + r)^t
+           ===================================================== */
+
+        function calculatePV() {
+
+            var futureValueText =
+                document.getElementById("pvFutureValue").value;
+
+            var rateText =
+                document.getElementById("pvRate").value;
+
+            var timeText =
+                document.getElementById("pvTime").value;
+
+
+            if (
+                isEmpty(futureValueText) ||
+                isEmpty(rateText) ||
+                isEmpty(timeText)
+            ) {
+
+                document.getElementById("pvAnswer").innerHTML =
+                    "Please fill all the fields.";
+
+                return;
+            }
+
+
+            var FV = Number(futureValueText);
+            var R = Number(rateText);
+            var T = Number(timeText);
+
+
+            if (
+                FV <= 0 ||
+                R < 0 ||
+                R > 100 ||
+                T <= 0
+            ) {
+
+                document.getElementById("pvAnswer").innerHTML =
+                    "Please enter valid values. Rate should be between 0% and 100%.";
+
+                return;
+            }
+
+
+            var r = R / 100;
+
+            var PV =
+                FV / Math.pow(1 + r, T);
+
+
+            document.getElementById("pvAnswer").innerHTML =
+                "Present Value = " + money(PV);
+
+        }
+
+
+        /* =====================================================
+           3. SIMPLE INTEREST
+           SI = P × r × t
+           ===================================================== */
+
+        function calculateSI() {
+
+            var principalText =
+                document.getElementById("siPrincipal").value;
+
+            var rateText =
+                document.getElementById("siRate").value;
+
+            var timeText =
+                document.getElementById("siTime").value;
+
+
+            if (
+                isEmpty(principalText) ||
+                isEmpty(rateText) ||
+                isEmpty(timeText)
+            ) {
+
+                document.getElementById("siAnswer").innerHTML =
+                    "Please fill all the fields.";
+
+                return;
+            }
+
+
+            var P = Number(principalText);
+            var R = Number(rateText);
+            var T = Number(timeText);
+
+
+            if (
+                P <= 0 ||
+                R < 0 ||
+                R > 100 ||
+                T <= 0
+            ) {
+
+                document.getElementById("siAnswer").innerHTML =
+                    "Please enter valid values. Rate should be between 0% and 100%.";
+
+                return;
+            }
+
+
+            var r = R / 100;
+
+            var interest =
+                P * r * T;
+
+            var amount =
+                P + interest;
+
+
+            document.getElementById("siAnswer").innerHTML =
+                "Interest Earned = " + money(interest) +
+                "<br>Maturity Value = " + money(amount);
+
+        }
+
+
+        /* =====================================================
+           4. COMPOUND INTEREST
+           A = P(1 + r/n)^(nt)
+           CI = A - P
+           ===================================================== */
+
+        function calculateCI() {
+
+            var principalText =
+                document.getElementById("ciPrincipal").value;
+
+            var rateText =
+                document.getElementById("ciRate").value;
+
+            var timeText =
+                document.getElementById("ciTime").value;
+
+
+            if (
+                isEmpty(principalText) ||
+                isEmpty(rateText) ||
+                isEmpty(timeText)
+            ) {
+
+                document.getElementById("ciAnswer").innerHTML =
+                    "Please fill all the fields.";
+
+                return;
+            }
+
+
+            var P = Number(principalText);
+            var R = Number(rateText);
+            var T = Number(timeText);
+
+            var n =
+                Number(document.getElementById("ciFrequency").value);
+
+
+            if (
+                P <= 0 ||
+                R < 0 ||
+                R > 100 ||
+                T <= 0 ||
+                n <= 0
+            ) {
+
+                document.getElementById("ciAnswer").innerHTML =
+                    "Please enter valid values. Rate should be between 0% and 100%.";
+
+                return;
+            }
+
+
+            var r = R / 100;
+
+
+            var amount =
+                P * Math.pow(
+                    1 + r / n,
+                    n * T
+                );
+
+
+            var interest =
+                amount - P;
+
+
+            document.getElementById("ciAnswer").innerHTML =
+                "Compound Interest = " + money(interest) +
+                "<br>Maturity Value = " + money(amount);
+
+        }
+
+
+        /* =====================================================
+           COMMON EMI FUNCTION
+           ===================================================== */
+
+        function getEMI(P, R, T) {
+
+            // Convert annual rate to monthly rate
+            var monthlyRate =
+                R / 100 / 12;
+
+
+            // Convert years to months
+            var months =
+                Math.round(T * 12);
+
+
+            // If rate is zero
+            if (monthlyRate == 0) {
+
+                return P / months;
+
+            }
+
+
+            // EMI formula
+            var EMI =
+                P * monthlyRate *
+                Math.pow(
+                    1 + monthlyRate,
+                    months
+                ) /
+                (
+                    Math.pow(
+                        1 + monthlyRate,
+                        months
+                    ) - 1
+                );
+
+
+            return EMI;
+        }
+
+
+        /* =====================================================
+           5. EMI CALCULATION
+           ===================================================== */
+
+        function calculateEMI() {
+
+            var loanText =
+                document.getElementById("emiLoan").value;
+
+            var rateText =
+                document.getElementById("emiRate").value;
+
+            var yearsText =
+                document.getElementById("emiYears").value;
+
+
+            if (
+                isEmpty(loanText) ||
+                isEmpty(rateText) ||
+                isEmpty(yearsText)
+            ) {
+
+                document.getElementById("emiAnswer").innerHTML =
+                    "Please fill all the fields.";
+
+                return;
+            }
+
+
+            var P = Number(loanText);
+            var R = Number(rateText);
+            var T = Number(yearsText);
+
+
+            if (
+                P <= 0 ||
+                R < 0 ||
+                R > 100 ||
+                T <= 0
+            ) {
+
+                document.getElementById("emiAnswer").innerHTML =
+                    "Please enter valid values. Rate should be between 0% and 100%.";
+
+                return;
+            }
+
+
+            var EMI =
+                getEMI(P, R, T);
+
+
+            var months =
+                Math.round(T * 12);
+
+
+            var totalPayment =
+                EMI * months;
+
+
+            var totalInterest =
+                totalPayment - P;
+
+
+            document.getElementById("emiAnswer").innerHTML =
+                "Monthly EMI = " + money(EMI) +
+                "<br>Total Payment = " + money(totalPayment) +
+                "<br>Total Interest = " + money(totalInterest);
+
+        }
+
+
+        /* =====================================================
+           6. LOAN AMORTIZATION
+
+           Each month:
+
+           Interest = Opening Balance × Monthly Rate
+
+           Principal = EMI - Interest
+
+           Closing Balance =
+           Opening Balance - Principal
+           ===================================================== */
+
+        function calculateAmortization() {
+
+            var loanText =
+                document.getElementById("amortLoan").value;
+
+            var rateText =
+                document.getElementById("amortRate").value;
+
+            var yearsText =
+                document.getElementById("amortYears").value;
+
+
+            if (
+                isEmpty(loanText) ||
+                isEmpty(rateText) ||
+                isEmpty(yearsText)
+            ) {
+
+                document.getElementById("amortAnswer").innerHTML =
+                    "Please fill all the fields.";
+
+                return;
+            }
+
+
+            var P = Number(loanText);
+            var R = Number(rateText);
+            var T = Number(yearsText);
+
+
+            if (
+                P <= 0 ||
+                R < 0 ||
+                R > 100 ||
+                T <= 0
+            ) {
+
+                document.getElementById("amortAnswer").innerHTML =
+                    "Please enter valid values. Rate should be between 0% and 100%.";
+
+                return;
+            }
+
+
+            // Calculate EMI
+            var EMI =
+                getEMI(P, R, T);
+
+
+            // Monthly interest rate
+            var monthlyRate =
+                R / 100 / 12;
+
+
+            // Total number of months
+            var months =
+                Math.round(T * 12);
+
+
+            // Initial loan balance
+            var balance = P;
+
+
+            // Start table
+            var table = "<table>";
+
+
+            table += "<tr>";
+
+            table += "<th>Month</th>";
+            table += "<th>Opening Balance</th>";
+            table += "<th>Interest</th>";
+            table += "<th>Principal</th>";
+            table += "<th>EMI</th>";
+            table += "<th>Closing Balance</th>";
+
+            table += "</tr>";
+
+
+            // Generate each month's row
+            for (
+                var month = 1;
+                month <= months;
+                month++
+            ) {
+
+                var opening =
+                    balance;
+
+
+                var interest =
+                    opening * monthlyRate;
+
+
+                var principal =
+                    EMI - interest;
+
+
+                var payment =
+                    EMI;
+
+
+                // Adjust final month
+                if (month == months) {
+
+                    principal =
+                        opening;
+
+                    payment =
+                        principal + interest;
+                }
+
+
+                balance =
+                    opening - principal;
+
+
+                if (balance < 0.01) {
+
+                    balance = 0;
+
+                }
+
+
+                table += "<tr>";
+
+                table += "<td>" +
+                    month +
+                    "</td>";
+
+                table += "<td>" +
+                    money(opening) +
+                    "</td>";
+
+                table += "<td>" +
+                    money(interest) +
+                    "</td>";
+
+                table += "<td>" +
+                    money(principal) +
+                    "</td>";
+
+                table += "<td>" +
+                    money(payment) +
+                    "</td>";
+
+                table += "<td>" +
+                    money(balance) +
+                    "</td>";
+
+                table += "</tr>";
+            }
+
+
+            table += "</table>";
+
+
+            document.getElementById("amortAnswer").innerHTML =
+                table;
+
+        }
+
+
+        /* =====================================================
+           7. SCENARIO ANALYSIS
+           Rates: 8%, 10%, 12%, 15%
+           ===================================================== */
+
+        function calculateScenario() {
+
+            var principalText =
+                document.getElementById("scenarioPrincipal").value;
+
+            var timeText =
+                document.getElementById("scenarioTime").value;
+
+
+            if (
+                isEmpty(principalText) ||
+                isEmpty(timeText)
+            ) {
+
+                document.getElementById("scenarioAnswer").innerHTML =
+                    "Please fill all the fields.";
+
+                return;
+            }
+
+
+            var P =
+                Number(principalText);
+
+            var T =
+                Number(timeText);
+
+
+            if (
+                P <= 0 ||
+                T <= 0
+            ) {
+
+                document.getElementById("scenarioAnswer").innerHTML =
+                    "Please enter valid principal and time values.";
+
+                return;
+            }
+
+
+            // Required scenario rates
+            var rates =
+                [8, 10, 12, 15];
+
+
+            var table =
+                "<table>";
+
+
+            table += "<tr>";
+
+            table +=
+                "<th>Interest Rate</th>";
+
+            table +=
+                "<th>Future Value</th>";
+
+            table += "</tr>";
+
+
+            for (
+                var i = 0;
+                i < rates.length;
+                i++
+            ) {
+
+                var r =
+                    rates[i] / 100;
+
+
+                var FV =
+                    P * Math.pow(
+                        1 + r,
+                        T
+                    );
+
+
+                table += "<tr>";
+
+                table +=
+                    "<td>" +
+                    rates[i] +
+                    "%</td>";
+
+                table +=
+                    "<td>" +
+                    money(FV) +
+                    "</td>";
+
+                table += "</tr>";
+            }
+
+
+            table += "</table>";
+
+
+            document.getElementById("scenarioAnswer").innerHTML =
+                table;
+
+        }
+
+
+        /* =====================================================
+           RESET FUNCTION
+           ===================================================== */
+
+        function resetPage(pageName) {
+
+            var page =
+                document.getElementById(pageName);
+
+
+            var inputs =
+                page.querySelectorAll("input");
+
+
+            // Clear all input fields
+            for (
+                var i = 0;
+                i < inputs.length;
+                i++
+            ) {
+
+                inputs[i].value = "";
+
+            }
+
+
+            // Reset result area
+            var result =
+                page.querySelector(".result");
+
+
+            if (pageName == "amortization") {
+
+                result.innerHTML =
+                    "Schedule will appear here.";
+
+            }
+
+            else if (pageName == "scenario") {
+
+                result.innerHTML =
+                    "Comparison will appear here.";
+
+            }
+
+            else {
+
+                result.innerHTML =
+                    "Result will appear here.";
+
+            }
+
+        }
+
+    </script>
+
+</body>
+</html>
